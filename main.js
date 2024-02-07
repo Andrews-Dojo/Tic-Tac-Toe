@@ -156,19 +156,19 @@ function GameController(player1, player2) {
     if (winner === "X") {
       for (let i = 0; i < players.length; i++) {
         if (players[i].xo === "X") {
-          return console.log(`${players[i].name} wins!`);
+          return alert(`${players[i].name} wins!`);
         }
       }
     }
     if (winner === "O") {
       for (let i = 0; i < players.length; i++) {
         if (players[i].xo === "O") {
-          return console.log(`${players[i].name} wins!`);
+          return alert(`${players[i].name} wins!`);
         }
       }
     }
     if (winner === "tie") {
-      return console.log(`It's a tie. Try again`);
+      return alert(`It's a tie. Try again`);
     }
   };
   return { getActivePlayer, playRound };
