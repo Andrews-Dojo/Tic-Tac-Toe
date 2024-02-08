@@ -11,12 +11,12 @@ const Gameboard = (function Gameboard() {
       board[i].push("-");
     }
   }
+// displays board in console. make sure to return function and uncomment in gamecontroller.
+//   const displayBoard = () => {
+//     return console.log(board);
+//   };
 
-  const displayBoard = () => {
-    return console.log(board);
-  };
-
-  return { displayBoard, board};
+  return {board};
 })();
 
 // Factory function to create players, give them a name and assign X or O
@@ -64,6 +64,7 @@ const domObj = function () {
                 const p1 = Player(p1Input, 'X');
                 const p2 = Player(p2Input, 'O');
                 startGame = GameController(p1, p2);
+                display();
                 return startGame;
             }
         })
@@ -74,19 +75,35 @@ const domObj = function () {
       const cells = document.querySelectorAll('.cell');
       cells.forEach(cell => {
           cell.addEventListener('click', ()=>{
+            if (cell.textContent !== '-'){
+                alert("Already selected");
+            } else{
             const location = cell.id;
             const locationArray = location.split(",");
             const roww = parseInt(locationArray[0]);
             const columnn = parseInt(locationArray[1]);
             startGame.playRound(roww,columnn);
+            }
           })
       })
     }
 
+    const display = () => {
+        const displayDiv = document.getElementById('display');
+        displayDiv.textContent =  `It's ${startGame.getActivePlayer().name}'s turn!`;
+    }
 
+    const restart = () => {
+        const restartBtn = document.getElementById('restart');
+        restartBtn.addEventListener('click', () => {
+            location.reload();
+        })
+    }
+
+    restart();
     playerSelection();
     createBoard();
-    return {createBoard, selectCell, playerSelection};
+    return {createBoard, selectCell, playerSelection, display};
   }();
 
 function GameController(player1, player2) {
@@ -171,7 +188,8 @@ function GameController(player1, player2) {
   const playRound = (row, column) => {
     board[row][column] = activePlayer.xo;
     switchPlayerTurn();
-    Gameboard.displayBoard();
+    domObj.display();
+    // Gameboard.displayBoard();
     // createBoard();
     domObj.createBoard();
     domObj.selectCell();
@@ -181,22 +199,28 @@ function GameController(player1, player2) {
     if (winner === "X") {
       for (let i = 0; i < players.length; i++) {
         if (players[i].xo === "X") {
-          return alert(`${players[i].name} wins!`);
+            const displayDiv = document.getElementById('display');
+            displayDiv.textContent = `${players[i].name} wins!`
+          return displayDiv;
         }
       }
     }
     if (winner === "O") {
       for (let i = 0; i < players.length; i++) {
         if (players[i].xo === "O") {
-          return alert(`${players[i].name} wins!`);
+            const displayDiv = document.getElementById('display');
+            displayDiv.textContent = `${players[i].name} wins!`
+          return displayDiv;
         }
       }
     }
     if (winner === "tie") {
-      return alert(`It's a tie. Try again`);
+        const displayDiv = document.getElementById('display');
+        displayDiv.textContent = `It's a tie!`
+      return displayDiv;
     }
   };
-  return { getActivePlayer, playRound };
+  return {getActivePlayer, playRound };
 }
 
     // To speed up game process for testing. can also toggle switch player
