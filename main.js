@@ -29,6 +29,7 @@ const Player = (name, xo) => {
 
 //Create object for display/DOM logic -- dont forget to call this function
 const domObj = function () {
+    let startGame;
     const createBoard = () => {
       const boardContainer = document.getElementById('board');
       const board = Gameboard.board;
@@ -48,6 +49,27 @@ const domObj = function () {
         boardContainer.appendChild(document.createElement("br"));
       }
     };
+
+    const playerSelection = () => {
+        const form = document.getElementById('form');
+        form.addEventListener('submit', () => {
+            const p1Input = document.getElementById('player1').value.trim();
+            const p2Input = document.getElementById('player2').value.trim();
+            
+            if(!p1Input || !p2Input){
+                event.preventDefault();
+                alert('Please fill out both name fields before submitting');
+            } else {
+                event.preventDefault();
+                const p1 = Player(p1Input, 'X');
+                const p2 = Player(p2Input, 'O');
+                startGame = GameController(p1, p2);
+                return startGame;
+            }
+        })
+
+    }
+
     const selectCell = () => {
       const cells = document.querySelectorAll('.cell');
       cells.forEach(cell => {
@@ -56,12 +78,15 @@ const domObj = function () {
             const locationArray = location.split(",");
             const roww = parseInt(locationArray[0]);
             const columnn = parseInt(locationArray[1]);
-            game.playRound(roww,columnn);
+            startGame.playRound(roww,columnn);
           })
       })
     }
+
+
+    playerSelection();
     createBoard();
-    return {createBoard, selectCell};
+    return {createBoard, selectCell, playerSelection};
   }();
 
 function GameController(player1, player2) {
@@ -174,9 +199,10 @@ function GameController(player1, player2) {
   return { getActivePlayer, playRound };
 }
 
-const andrew = Player("Andrew", "X");
-const jerry = Player("Jerry", "O");
-let game = GameController(andrew, jerry);
+    // To speed up game process for testing. can also toggle switch player
+// const andrew = Player("Andrew", "X");
+// const jerry = Player("Jerry", "O");
+// let game = GameController(andrew, jerry);
 
 
 
